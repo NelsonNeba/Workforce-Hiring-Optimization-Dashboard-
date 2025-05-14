@@ -1,0 +1,113 @@
+{
+  "version": "1.1.0",
+  "diagrams": [
+    {
+      "ordinal": 0,
+      "scrollPosition": {
+        "x": 527.9181471485125,
+        "y": 0
+      },
+      "nodes": [
+        {
+          "location": {
+            "x": 320.17975605950534,
+            "y": 30.950559456157606
+          },
+          "nodeIndex": "Store Data",
+          "nodeLineageTag": "4d2b5bf3-a167-4bab-82a0-a42f2c582e28",
+          "size": {
+            "height": 296,
+            "width": 234
+          },
+          "zIndex": 1
+        },
+        {
+          "location": {
+            "x": 871.25200356345783,
+            "y": 42.124341974005461
+          },
+          "nodeIndex": "Employee",
+          "nodeLineageTag": "7303fc00-ed0a-4274-a086-26c77c82246f",
+          "size": {
+            "height": 248,
+            "width": 234
+          },
+          "zIndex": 2
+        },
+        {
+          "location": {
+            "x": 569.26273025092712,
+            "y": 342.54055647707668
+          },
+          "nodeIndex": "Hiring Data",
+          "nodeLineageTag": "4028c2b1-bc95-4b62-90ac-6d75d4cb1327",
+          "size": {
+            "height": 300,
+            "width": 234
+          },
+          "zIndex": 3
+        },
+        {
+          "location": {
+            "x": 1113.9906432470539,
+            "y": 314.99144089741816
+          },
+          "nodeIndex": "Measures (2)",
+          "nodeLineageTag": "45ca6d08-6280-4e85-9f94-4131f3f1c805",
+          "size": {
+            "height": 104,
+            "width": 234
+          },
+          "zIndex": 0
+        },
+        {
+          "location": {
+            "x": 603.78054262191768,
+            "y": 807.47214335008118
+          },
+          "nodeIndex": "DateTable",
+          "nodeLineageTag": "9eb00b98-84d0-4ee0-ab4d-ea741ca31058",
+          "size": {
+            "height": 282.16525972470936,
+            "width": 234
+          },
+          "zIndex": 0
+        },
+        {
+          "location": {
+            "x": 1077.8108871875486,
+            "y": 470.5381770627373
+          },
+          "nodeIndex": "Hires - Cost",
+          "nodeLineageTag": "e27f4147-d42e-4dce-95b0-e3f722661b4b",
+          "size": {
+            "height": 152,
+            "width": 234
+          },
+          "zIndex": 0
+        },
+        {
+          "location": {
+            "x": 1077.8108871875486,
+            "y": 463.66027496136894
+          },
+          "nodeIndex": "Demographic",
+          "nodeLineageTag": "65c3c69e-47c2-49ef-b2c2-118f7bc46880",
+          "size": {
+            "height": 152,
+            "width": 234
+          },
+          "zIndex": 0
+        }
+      ],
+      "name": "All tables",
+      "zoomValue": 63.287087723234173,
+      "pinKeyFieldsToTop": false,
+      "showExtraHeaderInfo": false,
+      "hideKeyFieldsWhenCollapsed": false,
+      "tablesLocked": false
+    }
+  ],
+  "selectedDiagram": "All tables",
+  "defaultDiagram": "All tables"
+}

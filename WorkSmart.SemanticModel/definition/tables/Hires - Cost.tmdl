@@ -1,0 +1,49 @@
+table 'Hires - Cost'
+	lineageTag: e27f4147-d42e-4dce-95b0-e3f722661b4b
+
+	column 'Hires - Cost'
+		lineageTag: 44eb8a3c-7cef-4245-af73-c5ad05d264a2
+		summarizeBy: none
+		sourceColumn: [Value1]
+		sortByColumn: 'Hires - Cost Order'
+
+		relatedColumnDetails
+			groupByColumn: 'Hires - Cost Fields'
+
+		annotation SummarizationSetBy = Automatic
+
+	column 'Hires - Cost Fields'
+		isHidden
+		lineageTag: 8e0f8050-147e-46c0-93d8-5a3b7ef203d5
+		summarizeBy: none
+		sourceColumn: [Value2]
+		sortByColumn: 'Hires - Cost Order'
+
+		extendedProperty ParameterMetadata =
+				{
+				  "version": 3,
+				  "kind": 2
+				}
+
+		annotation SummarizationSetBy = Automatic
+
+	column 'Hires - Cost Order'
+		isHidden
+		formatString: 0
+		lineageTag: 397c22ab-7ff7-4d3d-8322-3cb865229629
+		summarizeBy: sum
+		sourceColumn: [Value3]
+
+		annotation SummarizationSetBy = Automatic
+
+	partition 'Hires - Cost' = calculated
+		mode: import
+		source =
+				{
+				    ("COSTS", NAMEOF('Measures (2)'[Total Hiring Cost]), 0),
+				    ("HIRES", NAMEOF('Measures (2)'[Total Hires]), 1),
+				    ("AVG CTC", NAMEOF('Measures (2)'[Average CTC]), 2)
+				}
+
+	annotation PBI_Id = 0f36c6b7800b45fe935d8b826353c309
+

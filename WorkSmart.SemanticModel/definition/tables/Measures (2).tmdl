@@ -1,0 +1,326 @@
+table 'Measures (2)'
+	lineageTag: 45ca6d08-6280-4e85-9f94-4131f3f1c805
+
+	measure 'Total Employees' = ```
+			SUM('Store Data'[employees])
+			
+			```
+		formatString: 0
+		displayFolder: KPIs
+		lineageTag: 28e4a6df-f03a-4f33-b570-a2788236864b
+
+	measure 'Average Employee Age' = ```
+			AVERAGE(Employee[Age])
+			
+			```
+		formatString: 0
+		displayFolder: KPIs
+		lineageTag: a335931c-4d0c-4aeb-8565-eef2db5dea97
+
+		annotation PBI_FormatHint = {"isDecimal":true}
+
+	measure 'Total Stores' = ```
+			DISTINCTCOUNT('Store Data'[store_id])
+			
+			```
+		formatString: 0
+		displayFolder: KPIs
+		lineageTag: dfb8cece-e33e-4541-9e3c-e32f63d03668
+
+	measure 'Avg Employees per Store' = ```
+			AVERAGE('Store Data'[employees])
+			
+			```
+		formatString: 0
+		displayFolder: KPIs
+		lineageTag: 3c767895-590c-49ab-a14d-0473951753be
+
+		annotation PBI_FormatHint = {"isDecimal":true}
+
+	measure 'Total Hires' = ```
+			COUNT('Hiring Data'[hiring_id])
+			
+			```
+		formatString: 0
+		displayFolder: KPIs
+		lineageTag: 1d66009d-f5ae-4738-b604-41d5e1cdf4fe
+
+	measure 'Total Hiring Cost' = ```
+			SUM('Hiring Data'[hiring_cost])
+			
+			```
+		displayFolder: KPIs
+		lineageTag: 1a38b23c-5d39-46e3-978d-173a2ad7faf7
+
+		annotation PBI_FormatHint = {"isGeneralNumber":true}
+
+	measure 'Total Relocation Cost' = ```
+			SUM('Hiring Data'[relocation_cost])
+			
+			```
+		formatString: \$#,0.###############;(\$#,0.###############);\$#,0.###############
+		displayFolder: KPIs
+		lineageTag: 8cea1f72-ee00-43b9-8b2b-01723d4c9403
+
+	measure 'Total CTC' = ```
+			SUM('Hiring Data'[ctc])
+			
+			```
+		displayFolder: KPIs
+		lineageTag: d0a15c80-ef50-4f49-ac03-2fa490f811b2
+
+		annotation PBI_FormatHint = {"isGeneralNumber":true}
+
+	measure 'Average CTC' = ```
+			AVERAGE('Hiring Data'[ctc])
+			
+			```
+		formatString: \$#,0.###############;(\$#,0.###############);\$#,0.###############
+		displayFolder: KPIs
+		lineageTag: 2691bbf9-6c81-49e8-ae12-c1a5ec757c78
+
+	measure 'Avg Hiring Cost' = ```
+			AVERAGE('Hiring Data'[hiring_cost])
+			
+			```
+		formatString: \$#,0.00;(\$#,0.00);\$#,0.00
+		displayFolder: KPIs
+		lineageTag: e2c566a9-3655-46f6-8493-64d4b7ab95af
+
+	measure 'Avg Interviews per Hire' = ```
+			AVERAGE('Hiring Data'[interviews])
+			
+			```
+		formatString: 0
+		displayFolder: Metrics
+		lineageTag: 67201db1-78ca-49bf-a4e0-bd715ccada0e
+
+		annotation PBI_FormatHint = {"isDecimal":true}
+
+	measure 'Avg Days to Join' = ```
+			AVERAGE('Hiring Data'[Days to Join])
+			
+			```
+		formatString: 0
+		displayFolder: Metrics
+		lineageTag: 280c238f-9100-4e92-90a5-b03eee938ecb
+
+		annotation PBI_FormatHint = {"isDecimal":true}
+
+	measure 'Line Space' = [Line Max Axis] - [Total Hires]
+		displayFolder: SVG Measures
+		lineageTag: 4c09b0ff-bb00-48ec-b4d2-a8ea080969b3
+
+		annotation PBI_FormatHint = {"isGeneralNumber":true}
+
+	measure 'Line Max Axis' =
+			
+			CALCULATE(
+			    MAXX(
+			        ALL(DateTable[Month Name]), [Total Hires]) * 1.15,
+			    ALLEXCEPT(DateTable, DateTable[Year]))
+		displayFolder: SVG Measures
+		lineageTag: db4e005c-33ac-4961-855a-b6ef85277295
+
+		annotation PBI_FormatHint = {"isGeneralNumber":true}
+
+	measure 'Bar Max Axis' =
+			
+			CALCULATE(
+			    MAXX(
+			        ALL(Employee[Job Title]), [Total Hiring Cost]) * 1.15,
+			    ALLEXCEPT(DateTable, DateTable[Year]))
+		displayFolder: SVG Measures
+		lineageTag: 5f77cbab-f371-43fc-a98c-55119ce2c1ec
+
+		annotation PBI_FormatHint = {"isGeneralNumber":true}
+
+	measure 'Bar Space' = [Bar Max Axis] - [Total Hiring Cost]
+		displayFolder: SVG Measures
+		lineageTag: 93920333-a9bd-486d-9658-c228bcbbd10e
+
+		annotation PBI_FormatHint = {"isGeneralNumber":true}
+
+	measure BarColor = ```
+			
+			VAR MinVal = CALCULATE(MIN('Hiring Data'[hiring_cost]), ALL('Hiring Data'))
+			VAR MaxVal = CALCULATE(MAX('Hiring Data'[hiring_cost]), ALL('Hiring Data'))
+			VAR Range = MaxVal - MinVal
+			VAR Val = [Total Hiring Cost]
+			VAR Ratio = DIVIDE(Val - MinVal, Range, 0)
+			
+			-- Interpolate between light blue (R:214 G:236 B:255) and dark blue (R:17 G:141 B:255)
+			VAR R = ROUND(214 + Ratio * (17 - 214), 0)
+			VAR G = ROUND(236 + Ratio * (141 - 236), 0)
+			VAR B = ROUND(255 + Ratio * (255 - 255), 0)
+			
+			RETURN 
+			"#" & 
+			FORMAT(R, "00") & 
+			FORMAT(G, "00") & 
+			FORMAT(B, "00")
+			
+			```
+		displayFolder: SVG Measures
+		lineageTag: 6b2dea3a-5cfe-4602-8581-cbcc05c06ed7
+
+	measure 'Hires MTD' = ```
+			CALCULATE(COUNT('Hiring Data'[hiring_id]), DATESMTD('DateTable'[Date]))
+			
+			```
+		formatString: 0
+		displayFolder: Metrics
+		lineageTag: a5e082dd-7e5b-422f-a3d9-fb14ef1b7fa9
+
+	measure 'Hires YTD' = ```
+			CALCULATE(COUNT('Hiring Data'[hiring_id]), DATESYTD('DateTable'[Date]))
+			
+			```
+		formatString: 0
+		displayFolder: Metrics
+		lineageTag: 4e1c8633-631d-4b3a-8dde-8150d6e673df
+
+	measure 'MTD Line Space' = [Line Max Axis] - [Average CTC]
+		displayFolder: SVG Measures
+		lineageTag: dad4165c-d110-4e1f-8179-784219912411
+
+		annotation PBI_FormatHint = {"isGeneralNumber":true}
+
+	measure 'YTD Line Space' = [YTD Line Max] - [Hires YTD]
+		displayFolder: SVG Measures
+		lineageTag: 5a715bf7-7a6a-45e5-ac3c-1cb739a54058
+
+		annotation PBI_FormatHint = {"isGeneralNumber":true}
+
+	measure 'MTD Line Max' =
+			
+			CALCULATE(
+			    MAXX(
+			        ALL(DateTable[Month Name]), [Average CTC]) * 1.09,
+			    ALLEXCEPT(DateTable, DateTable[Year]))
+		displayFolder: SVG Measures
+		lineageTag: 326c89ba-293d-4dd3-9417-4d683458f7e8
+
+		annotation PBI_FormatHint = {"isGeneralNumber":true}
+
+	measure 'YTD Line Max' =
+			
+			CALCULATE(
+			    MAXX(
+			        ALL(DateTable[Month Name]), [Hires YTD]) * 1.15,
+			    ALLEXCEPT(DateTable, DateTable[Year]))
+		displayFolder: SVG Measures
+		lineageTag: e9d74596-3a13-44d4-90ba-722ea65affae
+
+		annotation PBI_FormatHint = {"isGeneralNumber":true}
+
+	measure 'Total Employees in Stores' = ```
+			SUM('Store Data'[employees])
+			
+			```
+		formatString: 0
+		displayFolder: KPIs
+		lineageTag: 17156f42-ec3c-4ebe-a647-9fcb37d32a74
+
+	measure 'Average Employees per Store' = ```
+			AVERAGE('Store Data'[employees])
+			
+			```
+		displayFolder: KPIs
+		lineageTag: 4483568c-3726-4f37-9887-fd05470ac9f0
+
+		annotation PBI_FormatHint = {"isGeneralNumber":true}
+
+	measure 'Hires with Relocation' = ```
+			
+			CALCULATE(
+			    COUNTROWS('Hiring Data'),
+			    'Hiring Data'[relocation_cost] > 0
+			)
+			
+			```
+		formatString: 0
+		displayFolder: Metrics
+		lineageTag: 5ef1e119-fde2-4fab-85d7-b76fc714ba55
+
+	measure 'Avg Relocation Cost' = ```
+			
+			DIVIDE(
+			    [Total Relocation Cost],
+			    [Hires with Relocation]
+			)
+			
+			```
+		formatString: \$#,0.00;(\$#,0.00);\$#,0.00
+		lineageTag: 1e8b8e39-5d6f-4f78-9b2c-f3321fd73857
+
+	measure 'Reloc Line Max' =
+			
+			CALCULATE(
+			    MAXX(
+			        ALL(DateTable[Month Name]), [Total Relocation Cost]) * 1.111,
+			    ALLEXCEPT(DateTable, DateTable[Year]))
+		displayFolder: SVG Measures
+		lineageTag: d08e2834-6162-4228-a023-4a69b7fc4350
+
+		annotation PBI_FormatHint = {"isGeneralNumber":true}
+
+	measure 'Reloc Line Space' = [Reloc Line Max] - [Total Relocation Cost]
+		displayFolder: SVG Measures
+		lineageTag: 154cf3bb-3fc9-497a-8ae3-fe6f187a7111
+
+		annotation PBI_FormatHint = {"isGeneralNumber":true}
+
+	measure 'Total Interviews' = SUM('Hiring Data'[interviews])
+		displayFolder: Metrics
+		lineageTag: eb76f6e3-94ac-4ddc-858c-65a6e13c7a55
+
+		annotation PBI_FormatHint = {"isGeneralNumber":true}
+
+	measure 'Correlation HiringCost_CTC' = ```
+			
+			VAR AvgX = AVERAGE('Hiring Data'[hiring_cost])
+			VAR AvgY = AVERAGE('Hiring Data'[ctc])
+			
+			VAR Numerator = 
+			    SUMX(
+			        'Hiring Data',
+			        ('Hiring Data'[hiring_cost] - AvgX) * ('Hiring Data'[ctc] - AvgY)
+			    )
+			
+			VAR DenominatorX = 
+			    SQRT(
+			        SUMX(
+			            'Hiring Data',
+			            POWER('Hiring Data'[hiring_cost] - AvgX, 2)
+			        )
+			    )
+			
+			VAR DenominatorY = 
+			    SQRT(
+			        SUMX(
+			            'Hiring Data',
+			            POWER('Hiring Data'[ctc] - AvgY, 2)
+			        )
+			    )
+			
+			RETURN 
+			    DIVIDE(Numerator, DenominatorX * DenominatorY)
+			
+			```
+		lineageTag: 46591601-a736-458f-96da-790a56361433
+
+		annotation PBI_FormatHint = {"isGeneralNumber":true}
+
+	partition 'Measures (2)' = m
+		mode: import
+		source =
+				let
+				    Source = Table.FromRows(Json.Document(Binary.Decompress(Binary.FromText("i44FAA==", BinaryEncoding.Base64), Compression.Deflate)), let _t = ((type nullable text) meta [Serialized.Text = true]) in type table [Column1 = _t]),
+				    #"Changed Type" = Table.TransformColumnTypes(Source,{{"Column1", type text}}),
+				    #"Removed Columns" = Table.RemoveColumns(#"Changed Type",{"Column1"})
+				in
+				    #"Removed Columns"
+
+	annotation PBI_ResultType = Table
+

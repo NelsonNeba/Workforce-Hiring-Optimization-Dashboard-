@@ -1,0 +1,22 @@
+relationship 1cc81af5-3e56-fdb6-67db-fb65c20cf946
+	fromColumn: 'Hiring Data'.employee_id
+	toColumn: Employee.'Employee ID'
+
+relationship a55cb632-a5f9-f731-6a96-4db81d4b6570
+	fromColumn: 'Hiring Data'.store_office_id
+	toColumn: 'Store Data'.store_id
+
+relationship 6b5ade72-f6cf-4b07-b128-76f897e102e8
+	joinOnDateBehavior: datePartOnly
+	fromColumn: DateTable.Date
+	toColumn: LocalDateTable_1d38bf01-7c6a-4b15-8f11-216667ccd7f8.Date
+
+relationship 3801cd5e-23fb-7483-bd48-5465aa3c9df8
+	fromColumn: 'Hiring Data'.hiring_date
+	toColumn: DateTable.Date
+
+relationship 9a0f22f2-f88f-975d-f774-7e7ed34ba328
+	isActive: false
+	fromColumn: 'Hiring Data'.joining_date
+	toColumn: DateTable.Date
+

@@ -1,0 +1,42 @@
+model Model
+	culture: en-US
+	defaultPowerBIDataSourceVersion: powerBI_V3
+	sourceQueryCulture: en-US
+	dataAccessOptions
+		fastCombine
+		legacyRedirects
+		returnErrorValuesAsNull
+
+queryGroup 'Transform File from Store Data'
+
+	annotation PBI_QueryGroupOrder = 0
+
+queryGroup 'Transform File from Store Data\Helper Queries'
+
+	annotation PBI_QueryGroupOrder = 0
+
+/// Errors in queries that were loaded on 3/22/2025 10:40:53 PM.
+queryGroup 'Query Errors - 3/22/2025 10:40:53 PM'
+
+	annotation PBI_QueryGroupOrder = 2
+
+annotation PBI_QueryOrder = ["Store Data","Sample File","Parameter1","Transform Sample File","Old Hiring Data","New Hiring Data","Transform File","Employee","Hiring Data","Errors in Hiring Data","Measures (2)"]
+
+annotation __PBI_TimeIntelligenceEnabled = 1
+
+annotation PBIDesktopVersion = 2.140.1577.0 (25.02)+00af0910c5ca19a229c472b0dfc17a2c488f6b0a
+
+annotation PBI_ProTooling = ["DevMode"]
+
+ref table 'Store Data'
+ref table Employee
+ref table 'Hiring Data'
+ref table 'Measures (2)'
+ref table DateTable
+ref table DateTableTemplate_7660ea56-bfd1-41fb-adb5-dbb88bfcb940
+ref table LocalDateTable_1d38bf01-7c6a-4b15-8f11-216667ccd7f8
+ref table 'Hires - Cost'
+ref table Demographic
+
+ref cultureInfo en-US
+

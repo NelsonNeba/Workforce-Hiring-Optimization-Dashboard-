@@ -1,0 +1,96 @@
+expression 'Sample File' =
+		let
+		    Source = Folder.Files("C:\Users\Nel\Desktop\Data Analytics\Power BI for HR; Visualize HR data using Power BI\PowerBIforHRcourseresources\Power BI for HR course resources\HR Data\Store Data"),
+		    Navigation1 = Source{0}[Content]
+		in
+		    Navigation1
+	lineageTag: c7873360-e0fb-4854-83cd-e27626a8604c
+	queryGroup: 'Transform File from Store Data\Helper Queries'
+
+	annotation PBI_ResultType = Binary
+
+expression Parameter1 = #"Sample File" meta [IsParameterQuery=true, BinaryIdentifier=#"Sample File", Type="Binary", IsParameterQueryRequired=true]
+	lineageTag: d3bbcc60-ce10-4386-a998-72cb92bdaaa6
+	queryGroup: 'Transform File from Store Data\Helper Queries'
+
+	annotation PBI_ResultType = Binary
+
+expression 'Transform Sample File' =
+		let
+		    Source = Csv.Document(Parameter1,[Delimiter=",", Columns=8, Encoding=1252, QuoteStyle=QuoteStyle.None]),
+		    #"Promoted Headers" = Table.PromoteHeaders(Source, [PromoteAllScalars=true])
+		in
+		    #"Promoted Headers"
+	lineageTag: 90c40d15-4aac-4880-8444-c9f9e9a5ed0a
+	queryGroup: 'Transform File from Store Data'
+
+	annotation PBI_ResultType = Table
+
+expression 'Transform File' =
+		let
+		    Source = (Parameter1) => let
+		        Source = Csv.Document(Parameter1,[Delimiter=",", Columns=8, Encoding=1252, QuoteStyle=QuoteStyle.None]),
+		        #"Promoted Headers" = Table.PromoteHeaders(Source, [PromoteAllScalars=true])
+		    in
+		        #"Promoted Headers"
+		in
+		    Source
+	lineageTag: 69e1140e-6c17-4452-9dfc-b1c60d76da35
+	queryGroup: 'Transform File from Store Data\Helper Queries'
+
+	annotation PBI_ResultType = Function
+
+expression 'Old Hiring Data' =
+		let
+		    Source = Csv.Document(File.Contents("C:\Users\Nel\Desktop\Data Analytics\Power BI for HR; Visualize HR data using Power BI\PowerBIforHRcourseresources\Power BI for HR course resources\HR Data\Hiring Data\Hiring Data before2023.csv"),[Delimiter=",", Columns=10, Encoding=1252, QuoteStyle=QuoteStyle.None]),
+		    #"Promoted Headers" = Table.PromoteHeaders(Source, [PromoteAllScalars=true]),
+		    #"Changed Type" = Table.TransformColumnTypes(#"Promoted Headers",{{"hiring_id", Int64.Type}, {"hiring_date", type text}, {"joining_date", type text}, {"hiring_mode", type text}, {"employee_id", type text}, {"store_office_id", type text}, {"ctc", type number}, {"interviews", Int64.Type}, {"relocation_cost", Int64.Type}, {"hiring_cost", type number}}),
+		    #"Changed Type1" = Table.TransformColumnTypes(#"Changed Type",{{"hiring_id", type text}}),
+		    #"Removed Bottom Rows" = Table.RemoveLastN(#"Changed Type1",1),
+		    #"Changed Type with Locale" = Table.TransformColumnTypes(#"Removed Bottom Rows", {{"hiring_date", type date}}, "en-AE"),
+		    #"Changed Type with Locale1" = Table.TransformColumnTypes(#"Changed Type with Locale", {{"joining_date", type date}}, "en-AE")
+		in
+		    #"Changed Type with Locale1"
+	lineageTag: efc09c6f-87d6-404f-bcc3-2792a0e45fb1
+	queryGroup: 'Transform File from Store Data'
+
+	annotation PBI_NavigationStepName = Navigation
+
+	annotation PBI_ResultType = Table
+
+expression 'New Hiring Data' =
+		let
+		    Source = PostgreSQL.Database("localhost:5432", "Hiring_db"),
+		    public_hiring_data = Source{[Schema="public",Item="hiring_data"]}[Data]
+		in
+		    public_hiring_data
+	lineageTag: 2c4c6108-cd94-42a0-a31e-b73234716a7e
+	queryGroup: 'Transform File from Store Data'
+
+	annotation PBI_NavigationStepName = Navigation
+
+	annotation PBI_ResultType = Table
+
+expression 'Errors in Hiring Data' =
+		let
+		Source = #"Hiring Data",
+		  #"Detected Type Mismatches" = let
+		    tableWithOnlyPrimitiveTypes = Table.SelectColumns(Source, Table.ColumnsOfType(Source, {type nullable number, type nullable text, type nullable logical, type nullable date, type nullable datetime, type nullable datetimezone, type nullable time, type nullable duration})),
+		    recordTypeFields = Type.RecordFields(Type.TableRow(Value.Type(tableWithOnlyPrimitiveTypes))),
+		    fieldNames = Record.FieldNames(recordTypeFields),
+		    fieldTypes = List.Transform(Record.ToList(recordTypeFields), each [Type]),
+		    pairs = List.Transform(List.Positions(fieldNames), (i) => {fieldNames{i}, (v) => if v = null or Value.Is(v, fieldTypes{i}) then v else error [Message = "The type of the value does not match the type of the column.", Detail = v], fieldTypes{i}})
+		in
+		    Table.TransformColumns(Source, pairs),
+		  #"Added Index" = Table.AddIndexColumn(#"Detected Type Mismatches", "Row Number" ,1),
+		  #"Kept Errors" = Table.SelectRowsWithErrors(#"Added Index", {"hiring_id", "hiring_date", "joining_date", "hiring_mode", "employee_id", "store_office_id", "ctc", "interviews", "relocation_cost", "hiring_cost"}),
+		  #"Reordered Columns" = Table.ReorderColumns(#"Kept Errors", {"Row Number", "hiring_id", "hiring_date", "joining_date", "hiring_mode", "employee_id", "store_office_id", "ctc", "interviews", "relocation_cost", "hiring_cost"})
+		in
+		  #"Reordered Columns"
+	lineageTag: a4320cce-afc6-4776-9fb5-58e0a3c4d303
+	queryGroup: 'Query Errors - 3/22/2025 10:40:53 PM'
+
+	annotation PBI_NavigationStepName = Navigation
+
+	annotation PBI_ResultType = Table
+

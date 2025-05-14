@@ -1,0 +1,48 @@
+table Demographic
+	lineageTag: 65c3c69e-47c2-49ef-b2c2-118f7bc46880
+
+	column Demographic
+		lineageTag: 94b8c348-3b2d-4728-8277-b06fd5aaddf1
+		summarizeBy: none
+		sourceColumn: [Value1]
+		sortByColumn: 'Demographic Order'
+
+		relatedColumnDetails
+			groupByColumn: 'Demographic Fields'
+
+		annotation SummarizationSetBy = Automatic
+
+	column 'Demographic Fields'
+		isHidden
+		lineageTag: e23659ef-5898-41b0-bbd5-38c8cde8d94c
+		summarizeBy: none
+		sourceColumn: [Value2]
+		sortByColumn: 'Demographic Order'
+
+		extendedProperty ParameterMetadata =
+				{
+				  "version": 3,
+				  "kind": 2
+				}
+
+		annotation SummarizationSetBy = Automatic
+
+	column 'Demographic Order'
+		isHidden
+		formatString: 0
+		lineageTag: 834887ca-80ea-4ede-bd36-0bfd1e04705d
+		summarizeBy: sum
+		sourceColumn: [Value3]
+
+		annotation SummarizationSetBy = Automatic
+
+	partition Demographic = calculated
+		mode: import
+		source =
+				{
+				    ("Total Stores", NAMEOF('Measures (2)'[Total Stores]), 0),
+				    ("Total Employees", NAMEOF('Measures (2)'[Total Employees in Stores]), 1)
+				}
+
+	annotation PBI_Id = a1a14dca5c7442a59f719a443a7ed2d7
+

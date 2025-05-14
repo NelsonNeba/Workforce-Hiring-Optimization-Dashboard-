@@ -1,0 +1,89 @@
+table DateTable
+	lineageTag: 9eb00b98-84d0-4ee0-ab4d-ea741ca31058
+
+	column Date
+		formatString: General Date
+		lineageTag: f79b23f8-9ae5-4e72-afb0-cf73f90e7c69
+		summarizeBy: none
+		isNameInferred
+		sourceColumn: [Date]
+
+		variation Variation
+			isDefault
+			relationship: 6b5ade72-f6cf-4b07-b128-76f897e102e8
+			defaultHierarchy: LocalDateTable_1d38bf01-7c6a-4b15-8f11-216667ccd7f8.'Date Hierarchy'
+
+		annotation SummarizationSetBy = Automatic
+
+	column Year
+		formatString: 0
+		lineageTag: 29d51afd-afb3-4bd2-b33e-405771c6f7d7
+		summarizeBy: sum
+		isNameInferred
+		sourceColumn: [Year]
+
+		annotation SummarizationSetBy = Automatic
+
+	column Quarter
+		lineageTag: ec775429-8f20-45bc-a60c-1e003286c6c2
+		summarizeBy: none
+		isNameInferred
+		sourceColumn: [Quarter]
+
+		annotation SummarizationSetBy = Automatic
+
+	column 'Month Number'
+		formatString: 0
+		lineageTag: 29d7d729-a66a-44d1-9fe3-0b079ae09dfc
+		summarizeBy: sum
+		isNameInferred
+		sourceColumn: [Month Number]
+
+		annotation SummarizationSetBy = Automatic
+
+	column 'Month Name'
+		lineageTag: d0b525e8-9521-4656-a62b-bd75c428cc7f
+		summarizeBy: none
+		isNameInferred
+		sourceColumn: [Month Name]
+		sortByColumn: 'Month Number'
+
+		annotation SummarizationSetBy = Automatic
+
+	column Weekday
+		lineageTag: 95a30abf-36c1-4690-8dac-3f9c7b71b376
+		summarizeBy: none
+		isNameInferred
+		sourceColumn: [Weekday]
+
+		annotation SummarizationSetBy = Automatic
+
+	column 'Is Weekend'
+		lineageTag: a41cd83e-330f-4f47-bdcf-5664ee8d84f2
+		summarizeBy: none
+		isNameInferred
+		sourceColumn: [Is Weekend]
+
+		annotation SummarizationSetBy = Automatic
+
+	partition DateTable = calculated
+		mode: import
+		source = ```
+				
+				VAR MinDate = MIN('Hiring Data'[hiring_date])
+				VAR MaxDate = MAX('Hiring Data'[hiring_date])
+				RETURN
+				ADDCOLUMNS(
+				    CALENDAR(MinDate, MaxDate),
+				    "Year", YEAR([Date]),
+				    "Quarter", "Q" & FORMAT([Date], "Q"),
+				    "Month Number", MONTH([Date]),
+				    "Month Name", FORMAT([Date], "MMM"),
+				    "Weekday", FORMAT([Date], "dddd"),
+				    "Is Weekend", IF(WEEKDAY([Date], 2) >= 6, "Yes", "No")
+				)
+				
+				```
+
+	annotation PBI_Id = e18f771f1c5c452daa6e449d5380bc22
+

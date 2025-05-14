@@ -1,0 +1,173 @@
+table 'Hiring Data'
+	lineageTag: 4028c2b1-bc95-4b62-90ac-6d75d4cb1327
+
+	column hiring_id
+		dataType: string
+		lineageTag: 19ea211e-b746-4c12-8242-d17fb74d9654
+		summarizeBy: none
+		sourceColumn: hiring_id
+
+		annotation SummarizationSetBy = Automatic
+
+	column hiring_date
+		dataType: dateTime
+		formatString: Long Date
+		lineageTag: 2c281a1e-f937-4959-94e6-4e44c0d3ceaf
+		summarizeBy: none
+		sourceColumn: hiring_date
+
+		annotation SummarizationSetBy = Automatic
+
+		annotation UnderlyingDateTimeDataType = Date
+
+	column joining_date
+		dataType: dateTime
+		formatString: Long Date
+		lineageTag: d8ebe632-c4d5-4039-9387-d4a34fd9a88a
+		summarizeBy: none
+		sourceColumn: joining_date
+
+		annotation SummarizationSetBy = Automatic
+
+		annotation UnderlyingDateTimeDataType = Date
+
+	column hiring_mode
+		dataType: string
+		lineageTag: 30677f04-402c-4f1c-acdb-bd8ab3198907
+		summarizeBy: none
+		sourceColumn: hiring_mode
+
+		annotation SummarizationSetBy = Automatic
+
+	column employee_id
+		dataType: string
+		lineageTag: 73904895-0843-4ac2-8da9-4f4ad6afc06c
+		summarizeBy: none
+		sourceColumn: employee_id
+
+		annotation SummarizationSetBy = Automatic
+
+	column store_office_id
+		dataType: string
+		lineageTag: f21a60fb-4094-414f-93bf-dc5dab17c85f
+		summarizeBy: none
+		sourceColumn: store_office_id
+
+		annotation SummarizationSetBy = Automatic
+
+	column ctc
+		dataType: double
+		lineageTag: beebc276-b9d1-44a2-877c-40b33a892ff2
+		summarizeBy: sum
+		sourceColumn: ctc
+
+		annotation SummarizationSetBy = Automatic
+
+		annotation PBI_FormatHint = {"isGeneralNumber":true}
+
+	column interviews
+		dataType: double
+		lineageTag: b2df259e-5c9e-4ce0-97b2-db35fb834bae
+		summarizeBy: sum
+		sourceColumn: interviews
+
+		annotation SummarizationSetBy = Automatic
+
+		annotation PBI_FormatHint = {"isGeneralNumber":true}
+
+	column relocation_cost
+		dataType: double
+		lineageTag: da9eb9fb-3a61-43d4-94c4-280360807655
+		summarizeBy: sum
+		sourceColumn: relocation_cost
+
+		annotation SummarizationSetBy = Automatic
+
+		annotation PBI_FormatHint = {"isGeneralNumber":true}
+
+	column hiring_cost
+		dataType: double
+		lineageTag: 732ac846-6aa3-404e-92e1-c7834572ebfa
+		summarizeBy: sum
+		sourceColumn: hiring_cost
+
+		annotation SummarizationSetBy = Automatic
+
+		annotation PBI_FormatHint = {"isGeneralNumber":true}
+
+	column HiringCostDollar = 'Hiring Data'[hiring_cost]/82
+		lineageTag: a15fd2b6-33db-4d38-8613-0c54996f955b
+		summarizeBy: sum
+
+		annotation SummarizationSetBy = Automatic
+
+		annotation PBI_FormatHint = {"isGeneralNumber":true}
+
+	column 'Joining Period'
+		dataType: int64
+		formatString: 0
+		lineageTag: 9407b9cd-f077-4b99-ab19-8e897507784c
+		summarizeBy: sum
+		sourceColumn: Joining Period
+
+		annotation SummarizationSetBy = Automatic
+
+	/// Categorize Hiring Cost in Low, Medium and High
+	column 'Hiring Cost Category' = ```
+			
+			SWITCH(
+			    TRUE(),
+			    'Hiring Data'[hiring_cost] < 300, "Low",
+			    'Hiring Data'[hiring_cost] <= 500, "Medium",
+			    "High"
+			)
+			
+			```
+		lineageTag: 42877d8d-53d9-4390-8ca5-84032cb92ebe
+		summarizeBy: none
+
+		annotation SummarizationSetBy = Automatic
+
+	column 'CTC Band' = ```
+			
+			SWITCH(
+			    TRUE(),
+			    'Hiring Data'[ctc]  < 40000, "< 40K",
+			    'Hiring Data'[ctc]  < 60000, "40K–60K",
+			    'Hiring Data'[ctc] < 100000, "60K–100K",
+			    "100K+"
+			)
+			
+			```
+		lineageTag: e46da983-802b-46f1-82b5-905d27dfc808
+		summarizeBy: none
+
+		annotation SummarizationSetBy = Automatic
+
+	column 'Days to Join' = ```
+			
+			ABS(DATEDIFF('Hiring Data'[hiring_date], 'Hiring Data'[joining_date], DAY))
+			
+			```
+		formatString: 0
+		lineageTag: dce9cfd6-7c95-45d8-a6a7-0238c8f1fb85
+		summarizeBy: sum
+
+		annotation SummarizationSetBy = User
+
+	partition 'Hiring Data' = m
+		mode: import
+		source =
+				let
+				    Source = Table.Combine({#"Old Hiring Data", #"New Hiring Data"}),
+				    #"Changed Type" = Table.TransformColumnTypes(Source,{{"hiring_id", type text}}),
+				    #"Inserted Date Subtraction" = Table.AddColumn(#"Changed Type", "Subtraction", each Duration.Days([joining_date] - [hiring_date]), Int64.Type),
+				    #"Renamed Columns" = Table.RenameColumns(#"Inserted Date Subtraction",{{"Subtraction", "Joining Period"}}),
+				    #"Reordered Columns" = Table.ReorderColumns(#"Renamed Columns",{"hiring_id", "hiring_date", "joining_date", "Joining Period", "hiring_mode", "employee_id", "store_office_id", "ctc", "interviews", "relocation_cost", "hiring_cost"})
+				in
+				    #"Reordered Columns"
+
+	annotation PBI_NavigationStepName = Navigation
+
+	annotation PBI_ResultType = Table
+

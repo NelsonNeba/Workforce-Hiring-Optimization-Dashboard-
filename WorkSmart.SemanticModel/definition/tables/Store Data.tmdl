@@ -1,0 +1,103 @@
+table 'Store Data'
+	lineageTag: 4d2b5bf3-a167-4bab-82a0-a42f2c582e28
+
+	column store_id
+		dataType: string
+		lineageTag: 9481f488-6795-4f9c-9711-d3d9a5758445
+		summarizeBy: none
+		sourceColumn: store_id
+
+		annotation SummarizationSetBy = Automatic
+
+	column employees
+		dataType: int64
+		formatString: 0
+		lineageTag: f8b5fade-3e94-437d-b149-c241bc09587c
+		summarizeBy: none
+		sourceColumn: employees
+
+		annotation SummarizationSetBy = Automatic
+
+	column store_size
+		dataType: string
+		lineageTag: 138636b6-ad95-4302-9f96-c3dc2e8dfa8a
+		summarizeBy: none
+		sourceColumn: store_size
+
+		annotation SummarizationSetBy = Automatic
+
+	column country
+		dataType: string
+		lineageTag: 78e7a332-4daa-464d-bcd3-1e52a8a88cf4
+		summarizeBy: none
+		sourceColumn: country
+
+		annotation SummarizationSetBy = Automatic
+
+	column city
+		dataType: string
+		lineageTag: 4c7d9e82-e0fa-4fba-9f9c-0c8b5f15e98c
+		summarizeBy: none
+		sourceColumn: city
+
+		annotation SummarizationSetBy = Automatic
+
+	column state
+		dataType: string
+		lineageTag: dc24608f-306a-40d1-aa52-c940aafc7353
+		summarizeBy: none
+		sourceColumn: state
+
+		annotation SummarizationSetBy = Automatic
+
+	column postal_code
+		dataType: string
+		lineageTag: 653b11fe-b014-4296-a371-af176b63a743
+		summarizeBy: none
+		sourceColumn: postal_code
+
+		annotation SummarizationSetBy = Automatic
+
+	column region
+		dataType: string
+		lineageTag: 931dd46d-92aa-4a63-97e1-40da8300288b
+		summarizeBy: none
+		sourceColumn: region
+
+		annotation SummarizationSetBy = Automatic
+
+	hierarchy 'country Hierarchy'
+		lineageTag: 92f6b8ef-0967-4202-b8ff-54decf917391
+
+		level country
+			lineageTag: 99cc88ca-8253-431c-8328-4abaace4c08c
+			column: country
+
+		level state
+			lineageTag: 4e977d2b-7d12-4db1-8be2-dc7bb427498c
+			column: state
+
+		level city
+			lineageTag: 7cabc050-3ff8-4680-9382-2b141a3e70ef
+			column: city
+
+	partition 'Store Data' = m
+		mode: import
+		source =
+				let
+				    Source = Folder.Files("C:\Users\Nel\Desktop\Data Analytics\Power BI for HR; Visualize HR data using Power BI\PowerBIforHRcourseresources\Power BI for HR course resources\HR Data\Store Data"),
+				    #"Filtered Hidden Files1" = Table.SelectRows(Source, each [Attributes]?[Hidden]? <> true),
+				    #"Invoke Custom Function1" = Table.AddColumn(#"Filtered Hidden Files1", "Transform File", each #"Transform File"([Content])),
+				    #"Renamed Columns1" = Table.RenameColumns(#"Invoke Custom Function1", {"Name", "Source.Name"}),
+				    #"Removed Other Columns1" = Table.SelectColumns(#"Renamed Columns1", {"Source.Name", "Transform File"}),
+				    #"Expanded Table Column1" = Table.ExpandTableColumn(#"Removed Other Columns1", "Transform File", Table.ColumnNames(#"Transform File"(#"Sample File"))),
+				    #"Changed Type" = Table.TransformColumnTypes(#"Expanded Table Column1",{{"Source.Name", type text}, {"store_id", type text}, {"employees", Int64.Type}, {"store_size", type text}, {"country", type text}, {"city", type text}, {"state", type text}, {"postal_code", type text}, {"region", type text}}),
+				    #"Removed File Name Columns" = Table.RemoveColumns(#"Changed Type",{"Source.Name"}),
+				    #"Replaced Value" = Table.ReplaceValue(#"Removed File Name Columns","USA","United States",Replacer.ReplaceText,{"country"})
+				in
+				    #"Replaced Value"
+
+	annotation PBI_NavigationStepName = Navigation
+
+	annotation PBI_ResultType = Table
+

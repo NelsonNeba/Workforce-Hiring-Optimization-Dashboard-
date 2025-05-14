@@ -1,0 +1,11 @@
+{
+  "$schema": "https://developer.microsoft.com/json-schemas/fabric/gitIntegration/platformProperties/2.0.0/schema.json",
+  "metadata": {
+    "type": "SemanticModel",
+    "displayName": "WorkSmart"
+  },
+  "config": {
+    "version": "2.0",
+    "logicalId": "ae24f4b8-7fda-462e-a7ae-75019322a05b"
+  }
+}
