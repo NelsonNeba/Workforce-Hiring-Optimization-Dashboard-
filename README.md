@@ -48,7 +48,8 @@ The dashboard is designed for intuitive navigation and deep-dive analysis, struc
 
 > 📷 **Dashboard Screenshot:**
 > *(Note: Replace this placeholder with an actual, high-quality screenshot of your Power BI dashboard.)*
-> ![Dashboard Screenshot](images/powerbi-dashboard.png)
+> ![Dashboard Screenshot](Assets/WorkSmart_001.png)
+![Dashboard Screenshot](Assets/WorkSmart_002.png)
 
 ### Navigable Pages:
 * **Overview & KPIs:** A high-level summary of key performance indicators related to hiring and employee demographics.
@@ -71,7 +72,7 @@ The dashboard integrates data from three primary sources, meticulously cleaned a
 
 A robust data model was established in Power BI, connecting these tables to enable cross-dataset analysis and dynamic filtering.
 
-![Model Screenshot](images/powerbi-dashboard.png)
+![Model Screenshot](Assets/model.png)
 ---
 
 ## 🔍 Key Insights & Recommendations
@@ -107,6 +108,7 @@ The dashboard uncovers critical patterns and provides actionable intelligence:
 This project leveraged a robust set of Microsoft Power BI features and data analysis techniques:
 
 * **Data Extraction & Transformation (ETL):** Utilized **Power Query** to connect to disparate CSV sources, perform data cleaning (handling missing values, standardizing dates, removing duplicates), and transform raw data into a star schema model.
+* **SQL (PostgreSQL):** For importing Hiring Data via Direct Query mode.
 * **Data Modeling:** Established a highly efficient and scalable **star schema data model** with clear relationships between Employee, Store, and Hiring tables, crucial for accurate cross-filter interactions.
 * **DAX (Data Analysis Expressions):** Developed complex DAX measures for key metrics such as:
     * `Total Hires`, `Total Hiring Cost`, `Avg Days to Join`, `Average CTC`.
